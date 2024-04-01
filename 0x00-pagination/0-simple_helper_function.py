@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
-"""function index_range"""
+"""
+function index_range
+"""
 
 
 def index_range(page: int, page_size: int) -> tuple[int, int]:
