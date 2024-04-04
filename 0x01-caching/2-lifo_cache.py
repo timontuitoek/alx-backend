@@ -55,14 +55,3 @@ class LIFOCache(BaseCaching):
         if key is None or key not in self.cache_data:
             return None
         return self.cache_data[key]
-
-
-if __name__ == "__main__":
-    my_cache = LIFOCache()
-    my_cache.put("A", "Hello")
-    my_cache.put("B", "World")
-    my_cache.put("C", "Holberton")
-    print(my_cache.get("A"))  # Output: Hello
-    my_cache.put("D", "School")  # Discards "Holberton"
-    print(my_cache.get("C"))  # Output: None
-    print(my_cache.get("D"))  # Output: School
