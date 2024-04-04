@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 """
-Module for implementing a LIFO caching system.
+Module for implementing an LFU caching system.
 """
+
+from collections import OrderedDict
 
 from base_caching import BaseCaching
 
@@ -9,49 +11,30 @@ from base_caching import BaseCaching
 class LIFOCache(BaseCaching):
     """
     LIFOCache class that inherits from BaseCaching.
-
-    This caching system implements the LIFO
-    (Last In, First Out) eviction policy.
+    Implements the Least Recently Used (LRU) eviction policy.
     """
-
     def __init__(self):
         """
-        Initializes the LIFOCache instance.
+        Initializes the cache.
         """
         super().__init__()
+        self.cache_data = OrderedDict()
 
     def put(self, key, item):
         """
-        Assigns the item value for the key key.
-
-        If the number of items in self.cache_data is higher
-        than BaseCaching.MAX_ITEMS,
-        it discards the last item put in cache
-        (LIFO algorithm) and prints DISCARD with the key discarded.
-
-        Args:
-            key: The key to be assigned.
-            item: The value to be assigned.
+        Adds an item in the cache.
         """
-        if key is not None and item is not None:
-            if len(self.cache_data) >= self.MAX_ITEMS:
-                # Remove the last item added to the cache (LIFO)
-                last_item_key = next(reversed(self.cache_data))
-                del self.cache_data[last_item_key]
-                print("DISCARD:", last_item_key)
-            self.cache_data[key] = item
+        if key is None or item is None:
+            return
+        if key not in self.cache_data:
+            if len(self.cache_data) + 1 > BaseCaching.MAX_ITEMS:
+                last_key, _ = self.cache_data.popitem(True)
+                print("DISCARD:", last_key)
+        self.cache_data[key] = item
+        self.cache_data.move_to_end(key, last=True)
 
     def get(self, key):
         """
-        Returns the value linked to the given key.
-
-        Args:
-            key: The key to retrieve the value.
-
-        Returns:
-            The value associated with the key,
-            or None if key is None or does not exist.
+        Retrieves an item by key.
         """
-        if key is None or key not in self.cache_data:
-            return None
-        return self.cache_data[key]
+        return self.cache_data.get(key, None)
